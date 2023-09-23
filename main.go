@@ -7,17 +7,10 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 )
 
-var transportationQuestion = []*survey.Question{
-	{
-		Name: "transportation",
-		Prompt: &survey.Select{
-			Message: "Choose the transportation:",
-			Options: []string{"Bike", "Public Transport"},
-		},
-		Validate: survey.Required,
-	},
-}
-
+// buildDayOptions calculates all the weekdays according to the current
+// date and returns a array of strings containing the whole week formatted
+// as: Saturday 22/09.
+// Week starts on a Sunday.
 func buildDayOptions() []string {
 	currentTime := time.Now()
 	startOfWeek := currentTime.AddDate(0, 0, -int(currentTime.Weekday()))
@@ -34,19 +27,18 @@ func buildDayOptions() []string {
 
 func main() {
 	days := []string{}
-	prompt := &survey.MultiSelect{
+	daysPrompt := &survey.MultiSelect{
 		Message: "Which days do you want to register?",
 		Options: buildDayOptions(),
 	}
-	survey.AskOne(prompt, &days)
+	survey.AskOne(daysPrompt, &days, survey.WithValidator(survey.Required))
 
-	answers := struct {
-		Transportation string
-	}{}
-	err := survey.Ask(transportationQuestion, &answers)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
+	var transport string
+	transportPrompt := &survey.Select{
+		Message: "Choose the transportation:",
+		Options: []string{"Bike", "Public Transport"},
 	}
-	fmt.Printf("%s - %s\n", days, answers.Transportation)
+	survey.AskOne(transportPrompt, &transport, survey.WithValidator(survey.Required))
+
+	fmt.Printf("%s - %s\n", days, transport)
 }
