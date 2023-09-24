@@ -49,7 +49,10 @@ func getTransportEmoji(transport string) string {
 }
 
 func displayCommutes(commutes []CommuteEntry) {
-	for _, commute := range commutes {
+	for i, commute := range commutes {
+		if i >= 30 {
+			break
+		}
 		fmt.Printf("Date: %s | Transport: %s %s\n",
 			commute.Date,
 			getTransportEmoji(commute.Transport),
@@ -92,6 +95,11 @@ func main() {
 		return
 	}
 
+	commutesMap := make(map[string]CommuteEntry)
+	for _, commute := range commutes {
+		commutesMap[commute.Date] = commute
+	}
+
 	for {
 		mainLoopOption := ""
 		mainLoopPrompt := &survey.Select{
@@ -112,10 +120,22 @@ func main() {
 				Message: "Which days do you want to register?",
 				Options: weekdayDateOptions.getDisplayTitles(),
 				Description: func(value string, index int) string {
-					return weekdayDateOptions[index].formatToDisplay()
+					display := weekdayDateOptions[index].formatToDisplay()
+					if _, exists := commutesMap[value]; exists {
+						display = display + " [Already registered]"
+					}
+					return display
 				},
 			}
-			survey.AskOne(daysPrompt, &days, survey.WithValidator(survey.Required))
+			var dateValidator survey.Validator = func(ans interface{}) error {
+				pickedDate := ans.([]survey.OptionAnswer)[0].Value
+				if _, exists := commutesMap[pickedDate]; exists {
+					return fmt.Errorf("date already registered")
+				}
+				return nil
+			}
+			validators := survey.ComposeValidators(dateValidator, survey.Required)
+			survey.AskOne(daysPrompt, &days, survey.WithValidator(validators))
 
 			transport := ""
 			transportPrompt := &survey.Select{
