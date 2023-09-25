@@ -3,14 +3,20 @@ package option
 import (
 	"fmt"
 
-	c "github.com/Pedr0Rocha/register-commute/internal/commute"
+	"github.com/Pedr0Rocha/register-commute/internal/storage"
 )
 
 const (
 	DISPLAY_OPTION = "Check commute days"
 )
 
-func DisplayCommutes(commutes []c.Commute) {
+func DisplayCommutes() {
+	commutes, err := storage.GetCommutes()
+	if err != nil {
+		fmt.Println("Not possible to display commutes", err)
+		return
+	}
+
 	for i, commute := range commutes {
 		if i >= 30 {
 			break

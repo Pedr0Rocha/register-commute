@@ -9,7 +9,7 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	c "github.com/Pedr0Rocha/register-commute/internal/commute"
-	"github.com/Pedr0Rocha/register-commute/internal/store"
+	"github.com/Pedr0Rocha/register-commute/internal/storage"
 )
 
 const (
@@ -20,7 +20,13 @@ var (
 	commutesMap c.CommuteMap
 )
 
-func RegisterNewCommute(commutes []c.Commute) {
+func RegisterNewCommute() {
+	commutes, err := storage.GetCommutes()
+	if err != nil {
+		fmt.Println("Not possible to register new commute", err)
+		return
+	}
+
 	commutesMap = make(c.CommuteMap)
 	for _, commute := range commutes {
 		commutesMap[commute.Date] = commute
@@ -28,8 +34,6 @@ func RegisterNewCommute(commutes []c.Commute) {
 
 	daysAnswer := askDays()
 	transportAnswer := askTransport()
-
-	fmt.Printf("%s - %s\n", daysAnswer, transportAnswer)
 
 	for _, day := range daysAnswer {
 		newEntry := c.Commute{
@@ -49,7 +53,7 @@ func RegisterNewCommute(commutes []c.Commute) {
 		return
 	}
 
-	err = os.WriteFile(store.FILE_PATH, updatedData, os.ModePerm)
+	err = os.WriteFile(storage.FILE_PATH, updatedData, os.ModePerm)
 	if err != nil {
 		fmt.Println("Could not write into the file:", err)
 		return
