@@ -19,7 +19,7 @@ It will generate a `.json` file in this format:
   "date": "2023-09-27",
   "transport": "Bike",
   "created_at": "2023-09-26 20:33:39.988289 +0000 UTC"
- },
+ }
 ]
 ```
 
