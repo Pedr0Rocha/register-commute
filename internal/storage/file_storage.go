@@ -22,6 +22,14 @@ func ReadFromFile() []byte {
 	return data
 }
 
+func WriteToFile(bytes []byte) error {
+	err := os.WriteFile(FILE_PATH, bytes, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("could not write into the file: %s", err)
+	}
+	return nil
+}
+
 func initFileStorage() {
 	fmt.Println("File not found. Creating new file to register commutes")
 	f, err := os.Create(FILE_PATH)

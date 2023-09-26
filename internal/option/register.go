@@ -1,10 +1,7 @@
 package option
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
-	"sort"
 	"time"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -33,29 +30,23 @@ func RegisterNewCommute() {
 	}
 
 	daysAnswer := askDays()
-	transportAnswer := askTransport()
-
-	for _, day := range daysAnswer {
-		newEntry := c.Commute{
-			Date:      day,
-			Transport: transportAnswer,
-		}
-
-		commutes = append(commutes, newEntry)
-	}
-	sort.Slice(commutes, func(i, j int) bool {
-		return commutes[i].Date > commutes[j].Date
-	})
-
-	updatedData, err := json.MarshalIndent(commutes, "", " ")
-	if err != nil {
-		fmt.Println("Error registering new commute:", err)
+	if len(daysAnswer) <= 0 {
 		return
 	}
 
-	err = os.WriteFile(storage.FILE_PATH, updatedData, os.ModePerm)
+	transportAnswer := askTransport()
+
+	newCommutes := []c.Commute{}
+	for _, day := range daysAnswer {
+		newCommutes = append(newCommutes, c.Commute{
+			Date:      day,
+			Transport: transportAnswer,
+		})
+	}
+
+	err = storage.CreateCommutes(newCommutes)
 	if err != nil {
-		fmt.Println("Could not write into the file:", err)
+		fmt.Println(err)
 		return
 	}
 }
@@ -90,13 +81,18 @@ func askDays() []string {
 		},
 	}
 	var dateValidator survey.Validator = func(ans interface{}) error {
-		pickedDate := ans.([]survey.OptionAnswer)[0].Value
+		optionAnswer := ans.([]survey.OptionAnswer)
+		if len(optionAnswer) <= 0 {
+			return nil
+		}
+
+		pickedDate := optionAnswer[0].Value
 		if _, exists := commutesMap[pickedDate]; exists {
 			return fmt.Errorf("date already registered")
 		}
 		return nil
 	}
-	validators := survey.ComposeValidators(dateValidator, survey.Required)
+	validators := survey.ComposeValidators(dateValidator)
 	survey.AskOne(daysPrompt, &days, survey.WithValidator(validators))
 
 	return days
