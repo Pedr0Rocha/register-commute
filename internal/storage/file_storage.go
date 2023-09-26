@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -15,10 +16,14 @@ func ReadFromFile() []byte {
 	data, err := os.ReadFile(FILE_PATH)
 
 	if errors.Is(err, os.ErrNotExist) {
-		initFileStorage()
-	} else if err != nil {
+		emptyData := initFileStorage()
+		return emptyData
+	}
+
+	if err != nil {
 		log.Fatal(err)
 	}
+
 	return data
 }
 
@@ -30,11 +35,17 @@ func WriteToFile(bytes []byte) error {
 	return nil
 }
 
-func initFileStorage() {
+func initFileStorage() []byte {
 	fmt.Println("File not found. Creating new file to register commutes")
-	f, err := os.Create(FILE_PATH)
+	emptyData, err := json.MarshalIndent([]string{}, "", " ")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
+
+	err = WriteToFile(emptyData)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return emptyData
 }

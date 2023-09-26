@@ -8,17 +8,23 @@ import (
 
 const (
 	DISPLAY_OPTION = "Check commute days"
+	DISPLAY_COUNT  = 30
 )
 
 func DisplayCommutes() {
 	commutes, err := storage.GetCommutes()
 	if err != nil {
-		fmt.Println("Not possible to display commutes", err)
+		fmt.Println("Not possible to display commutes:", err)
+		return
+	}
+
+	if len(commutes) == 0 {
+		fmt.Println("No commutes yet. Register one to begin.")
 		return
 	}
 
 	for i, commute := range commutes {
-		if i >= 30 {
+		if i >= DISPLAY_COUNT {
 			break
 		}
 		fmt.Printf("Date: %s | Transport: %s %s\n",
