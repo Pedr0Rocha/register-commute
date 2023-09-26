@@ -2,6 +2,10 @@
 
 CLI tool to help track commute days and make declaring costs easier
 
+### Run
+
+`go run cmd/main.go`
+
 ### Storage
 
 It will generate a `.json` file in this format:
