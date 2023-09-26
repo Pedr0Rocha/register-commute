@@ -7,6 +7,7 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 	c "github.com/Pedr0Rocha/register-commute/internal/commute"
 	"github.com/Pedr0Rocha/register-commute/internal/storage"
+	"github.com/google/uuid"
 )
 
 const (
@@ -39,8 +40,10 @@ func RegisterNewCommute() {
 	newCommutes := []c.Commute{}
 	for _, day := range daysAnswer {
 		newCommutes = append(newCommutes, c.Commute{
+			Id:        uuid.New().String(),
 			Date:      day,
 			Transport: transportAnswer,
+			CreatedAt: time.Now().UTC().String(),
 		})
 	}
 
