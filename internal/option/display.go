@@ -37,16 +37,18 @@ func DisplayCommutes() {
 		displayMap[month] = append(displayMap[month], commute)
 	}
 
-	month := make([]string, 0, len(displayMap))
+	months := make([]string, 0, len(displayMap))
 	for k := range displayMap {
-		month = append(month, k)
+		months = append(months, k)
 	}
 
-	for i, month := range month {
+	for i, month := range months {
 		if i >= DISPLAY_MONTH_COUNT {
 			break
 		}
+
 		fmt.Printf("====> %s <====\n", month)
+
 		for _, commute := range displayMap[month] {
 			fmt.Printf("Date: %s | Transport: %s %s\n",
 				commute.Date,
