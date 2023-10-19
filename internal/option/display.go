@@ -47,7 +47,7 @@ func DisplayCommutes() {
 			break
 		}
 
-		fmt.Printf("====> %s <====\n", month)
+		fmt.Printf("====> %s [%d] <====\n", month, len(displayMap[month]))
 
 		for _, commute := range displayMap[month] {
 			fmt.Printf("Date: %s | Transport: %s %s\n",
