@@ -55,7 +55,7 @@ func RegisterNewCommute() {
 }
 
 func getTransportationOptions() []string {
-	return []string{"Bike", "Public Transport"}
+	return []string{"Public Transport", "Bike"}
 }
 
 func askTransport() string {
