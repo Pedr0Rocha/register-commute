@@ -63,6 +63,7 @@ func askTransport() string {
 	transportPrompt := &survey.Select{
 		Message: "Choose the transportation:",
 		Options: getTransportationOptions(),
+		VimMode: true,
 	}
 	survey.AskOne(transportPrompt, &transport, survey.WithValidator(survey.Required))
 
@@ -75,6 +76,7 @@ func askDays() []string {
 	daysPrompt := &survey.MultiSelect{
 		Message: "Which days do you want to register?",
 		Options: weekdayDateOptions.FormatToOptionTitle(),
+		VimMode: true,
 		Description: func(value string, index int) string {
 			display := weekdayDateOptions[index].FormatToDisplay()
 			if _, exists := commutesMap[value]; exists {
