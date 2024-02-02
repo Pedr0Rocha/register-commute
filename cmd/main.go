@@ -17,6 +17,8 @@ func main() {
 			option.DisplayCommutes()
 		case option.REGISTER_OPTION:
 			option.RegisterNewCommute()
+		case option.DELETE_OPTION:
+			option.Delete()
 		}
 	}
 }

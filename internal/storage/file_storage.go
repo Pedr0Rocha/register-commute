@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	FILE_PATH = "commutes.json"
+	FILE_PATH = "commutes2.json"
 )
 
 func ReadFromFile() []byte {

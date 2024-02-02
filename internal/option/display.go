@@ -7,11 +7,12 @@ import (
 
 	c "github.com/Pedr0Rocha/register-commute/internal/commute"
 	"github.com/Pedr0Rocha/register-commute/internal/storage"
+	"github.com/Pedr0Rocha/register-commute/tools"
 )
 
 const (
 	DISPLAY_OPTION      = "Check commute days"
-	DISPLAY_MONTH_COUNT = 3
+	DISPLAY_MONTH_COUNT = 12
 )
 
 func DisplayCommutes() {
@@ -55,11 +56,7 @@ func DisplayCommutes() {
 		fmt.Printf("====> %s [%d] <====\n", month, len(displayMap[month]))
 
 		for _, commute := range displayMap[month] {
-			fmt.Printf("Date: %s | Transport: %s %s\n",
-				commute.Date,
-				getTransportEmoji(commute.Transport),
-				commute.Transport,
-			)
+			fmt.Printf(tools.GetDefaultCommuteDisplay(commute) + "\n")
 		}
 	}
 }
@@ -77,15 +74,4 @@ var monthMap = map[string]int{
 	"October":   10,
 	"November":  11,
 	"December":  12,
-}
-
-func getTransportEmoji(transport string) string {
-	switch transport {
-	case "Bike":
-		return "🚲"
-	case "Public Transport":
-		return "🚈"
-	default:
-		return ""
-	}
 }
