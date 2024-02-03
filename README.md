@@ -38,3 +38,11 @@ It will generate a `.json` file in this format:
 ### Register commute
 
 ![image](/images/register-commute.png)
+
+### Delete registered commute
+
+![image](/images/delete-commute.png)
+
+### Statistics
+
+![image](/images/statistics.png)
