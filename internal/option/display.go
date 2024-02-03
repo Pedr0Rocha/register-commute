@@ -2,8 +2,6 @@ package option
 
 import (
 	"fmt"
-	"sort"
-	"time"
 
 	c "github.com/Pedr0Rocha/register-commute/internal/commute"
 	"github.com/Pedr0Rocha/register-commute/internal/storage"
@@ -12,7 +10,7 @@ import (
 
 const (
 	DISPLAY_OPTION      = "Check commute days"
-	DISPLAY_MONTH_COUNT = 12
+	DISPLAY_MONTH_COUNT = 3
 )
 
 func DisplayCommutes() {
@@ -27,51 +25,36 @@ func DisplayCommutes() {
 		return
 	}
 
-	displayMap := make(map[string][]c.Commute)
+	periodCount := make(map[string]int)
 	for _, commute := range commutes {
-		date, err := time.Parse("2006-01-02", commute.Date)
-		if err != nil {
-			fmt.Println("Dates are not formatted propertly in the file:", err)
-			return
-		}
-
-		month := date.Month().String()
-		displayMap[month] = append(displayMap[month], commute)
+		periodCount[buildPeriodKey(commute)]++
 	}
 
-	months := make([]string, 0, len(displayMap))
-	for k := range displayMap {
-		months = append(months, k)
-	}
+	monthsDisplayed := 0
+	currMonth := ""
+	for _, commute := range commutes {
+		periodKey := buildPeriodKey(commute)
 
-	sort.Slice(months, func(i, j int) bool {
-		return monthMap[months[i]] > monthMap[months[j]]
-	})
+		if currMonth != commute.GetMonth() {
+			monthsDisplayed++
+			if monthsDisplayed > DISPLAY_MONTH_COUNT {
+				break
+			}
 
-	for i, month := range months {
-		if i >= DISPLAY_MONTH_COUNT {
-			break
+			fmt.Printf("====> %s/%s [%d] <====\n",
+				commute.GetMonth(),
+				commute.GetYear(),
+				periodCount[periodKey],
+			)
 		}
 
-		fmt.Printf("====> %s [%d] <====\n", month, len(displayMap[month]))
-
-		for _, commute := range displayMap[month] {
-			fmt.Printf(tools.GetDefaultCommuteDisplay(commute) + "\n")
-		}
+		currMonth = commute.GetMonth()
+		fmt.Printf(tools.GetDefaultCommuteDisplay(commute) + "\n")
 	}
 }
 
-var monthMap = map[string]int{
-	"January":   1,
-	"February":  2,
-	"March":     3,
-	"April":     4,
-	"May":       5,
-	"June":      6,
-	"July":      7,
-	"August":    8,
-	"September": 9,
-	"October":   10,
-	"November":  11,
-	"December":  12,
+func buildPeriodKey(commute c.Commute) string {
+	year := commute.GetYear()
+	month := commute.GetMonth()
+	return fmt.Sprintf("%s%s", year, month)
 }

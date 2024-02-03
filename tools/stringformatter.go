@@ -2,6 +2,7 @@ package tools
 
 import (
 	"fmt"
+	"time"
 
 	c "github.com/Pedr0Rocha/register-commute/internal/commute"
 )
@@ -18,8 +19,14 @@ func GetTransportEmoji(transport string) string {
 }
 
 func GetDefaultCommuteDisplay(commute c.Commute) string {
-	return fmt.Sprintf("Date: %s | Transport: %s %s",
+	date, err := time.Parse("2006-01-02", commute.Date)
+	if err != nil {
+		fmt.Println("Dates are not formatted propertly in the file:", err)
+		return ""
+	}
+	return fmt.Sprintf("Date: %s (%s) | Transport: %s %s",
 		commute.Date,
+		date.Weekday(),
 		GetTransportEmoji(commute.Transport),
 		commute.Transport,
 	)
