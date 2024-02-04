@@ -41,7 +41,7 @@ func DisplayCommutes() {
 				break
 			}
 
-			fmt.Printf("====> %s/%s [%d] <====\n",
+			fmt.Printf("\n===================> %s/%s [%d]\n",
 				commute.GetMonth(),
 				commute.GetYear(),
 				periodCount[periodKey],
